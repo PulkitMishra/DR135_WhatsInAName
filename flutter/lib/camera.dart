@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +60,14 @@ class CameraScreenState extends State<CameraScreen> {
     _controller.dispose();
     super.dispose();
   }
+
+  
+Future <void> updateHits(String docID, String hits) async {
+
+    await Firestore.instance.collection('monuments').document(docID).updateData({
+      'hits': hits,
+    });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -235,12 +245,15 @@ class CameraScreenState extends State<CameraScreen> {
 
     http.post(url, headers: {"Content-Type": "application/json"},body:body).then((res) {
      response = res.body;
+     print(response);
       String class_label = response.substring(response.indexOf("predicted_class\":") + "predicted_class\":".length);
       class_label = class_label.substring(0, class_label.length - 1);
       // print(mapper[class_label]);
       for (int i = 0; i < destinations.length; i++){
         print(destinations[i].class_label);
         if( server_side_mapper[class_label] == destinations[i].class_label){
+          destinations[i].hits = (int.parse(destinations[i].hits) + 1).toString();
+          updateHits(destinations[i].monumentID, destinations[i].hits);
           print("Got it. Navigate to: " + destinations[i].class_label);
           final_destination =  destinations[i];
           Navigator.push(context, MaterialPageRoute(builder: (_) => DestinationScreen.fieldConstructor(
@@ -263,14 +276,14 @@ class CameraScreenState extends State<CameraScreen> {
       Navigator.push(context, MaterialPageRoute(builder: (_) => ReportPage()));
       return -1;
 
-
-
    }).catchError((err) {
      response = "NULL";
    });
  
 
-    var output = await Tflite.runModelOnImage(
+    if(response == "NULL"){
+      print("Tflite invoked");
+      var output = await Tflite.runModelOnImage(
       path: imagePath,
       imageMean: 1,
       imageStd: 127.5
@@ -281,6 +294,8 @@ class CameraScreenState extends State<CameraScreen> {
       for (int i = 0; i < destinations.length; i++){
         if( tflite_side_mapper[index] == destinations[i].class_label){
           print("Got it. Navigate to: " + destinations[i].class_label);
+          destinations[i].hits = (int.parse(destinations[i].hits) + 1).toString();
+          updateHits(destinations[i].monumentID, destinations[i].hits);
           final_destination =  destinations[i];
           Navigator.push(context, MaterialPageRoute(builder: (_) => DestinationScreen.fieldConstructor(
                       final_destination.monument,
@@ -302,6 +317,7 @@ class CameraScreenState extends State<CameraScreen> {
       Navigator.push(context, MaterialPageRoute(builder: (_) => ReportPage()));
       return -1;
     
+    }
       
     
   }

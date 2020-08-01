@@ -13,6 +13,8 @@ class Destination {
   double longitude;
   String class_label;
   String long_description;
+  String hits;
+  String monumentID;
 
   Destination({
     this.monument,
@@ -122,6 +124,22 @@ class UpdateListOfDestination{
         final_desc += description_list[j] + "\n";
       }
       destinations[i].long_description = final_desc;
+      destinations[i].hits = list[i].data['hits'];
+      destinations[i].monumentID = list[i].documentID;
+    }
+
+    int length = destinations.length;
+    Destination currentDestination;
+    for(int i = 0; i < length; i++){
+        for(int j = 0; j < length - 1; j++){
+            int one_hits = int.parse(destinations[j].hits);
+            int two_hits = int.parse(destinations[j+1].hits);
+            if(one_hits < two_hits){
+              currentDestination = destinations[j];
+              destinations[j] = destinations[j+1];
+              destinations[j+1] = currentDestination;
+            }
+        }
     }
 }
 }

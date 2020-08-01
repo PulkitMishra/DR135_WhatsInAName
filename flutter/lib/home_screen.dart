@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_androidx/UserProfile.dart';
 import 'package:travel_androidx/nearby_places.dart';
+import 'package:travel_androidx/top_hits_carousel.dart';
 import 'package:travel_androidx/user_model.dart';
 import 'camera.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -203,6 +204,8 @@ class _HomeScreenState extends State<HomeScreen>{
             DestinationCarousel(),
             SizedBox(height: 20.0),
             HotelCarousel(),
+            SizedBox(height: 20.0),
+            TopHitsCarousel(),
           ], // <Widget>[]
         ), // List View
       ), // SafeArea

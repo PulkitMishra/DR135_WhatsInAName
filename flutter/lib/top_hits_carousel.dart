@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:travel_androidx/top_hits_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'destination_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,34 +26,42 @@ class TopHitsCarousel extends StatelessWidget{
   }
 
     void refreshDestinationList(){
-      double userLatitude = getUserLatitude();
-      double userLongitude = getUserLongitude();
+      
       int length = destinations.length;
-      double hotelLatitude;
-      double hotelLongitude;
       Destination currentDestination;
-      double distance;
-      map = new Map();
+
       for(int i = 0; i < length; i++){
-        currentDestination = destinations[i];
-        hotelLatitude = currentDestination.latitude;
-        hotelLongitude = currentDestination.longitude;
-        distance = sqrt( pow(userLatitude - hotelLatitude,2) + pow(userLongitude - hotelLongitude,2) );
-        map[distance] = currentDestination;
+        print(destinations[i]);
+      }
+
+      for(int i = 0; i < length; i++){
+        for(int j = 0; j < length - 1; j++){
+            int one_hits = int.parse(destinations[j].hits);
+            int two_hits = int.parse(destinations[j+1].hits);
+            if(one_hits < two_hits){
+              currentDestination = destinations[j];
+              destinations[j] = destinations[j+1];
+              destinations[j+1] = currentDestination;
+            }
+        }
     }
-      sortedKeys = map.keys.toList()..sort();
+
+    for(int i = 0; i < length; i++){
+        print(destinations[i]);
+      }
+      //sortedKeys = map.keys.toList()..sort();
   }
 
   @override
   Widget build(BuildContext context){
-    refreshDestinationList();
+    //refreshDestinationList();
     return Column (children: <Widget>[
               Padding( 
                 padding:EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                  Text('Near You', style: TextStyle(fontSize: 22.0, fontWeight:FontWeight.bold, letterSpacing:1.5
+                  Text('Top Hits', style: TextStyle(fontSize: 22.0, fontWeight:FontWeight.bold, letterSpacing:1.5
                     ), // TextStyle
                   ), // Text
                   GestureDetector(
@@ -76,7 +85,7 @@ class TopHitsCarousel extends StatelessWidget{
                 itemCount: destinations.length,
                 itemBuilder: (BuildContext context, int index){
                   
-                  Destination destination = map[sortedKeys[index]];
+                  Destination destination = destinations[index];
                   return GestureDetector(
                       onTap: () => Navigator.push(
                         context,
@@ -134,7 +143,7 @@ class TopHitsCarousel extends StatelessWidget{
                         child: Stack(
                           children: <Widget>[
                             Hero(
-                                tag: destination.imageUrl,
+                                tag: destination.imageUrl+"top_hits",
                                 child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
                                 child: Image(
