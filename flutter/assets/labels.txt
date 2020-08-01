@@ -1,0 +1,15 @@
+0 Aguada Fort
+1 Basilica of Bom Je...
+2 Chapora Fort
+3 Church and Convent...
+4 Corjuem Fort
+5 Mae De Deus Church
+6 Mandir
+7 Ponda Fort
+8 Reis Magos Fort
+9 Safa Masjid
+10 Yashwantgad
+11 Our Lady of the Immaculate Church
+12 Se Cathedral
+13 Ramnathi Temple
+14 St. Augstine
