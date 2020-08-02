@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_androidx/UserProfile.dart';
 import 'package:travel_androidx/nearby_places.dart';
+import 'package:travel_androidx/recomm.dart';
 import 'package:travel_androidx/top_hits_carousel.dart';
 import 'package:travel_androidx/user_model.dart';
 import 'camera.dart';
@@ -125,6 +126,81 @@ class _HomeScreenState extends State<HomeScreen>{
 
   
 
+BottomNavigationBar getBottomNavigationBar(BuildContext context){
+
+  return BottomNavigationBar(
+          currentIndex: _currentTab,
+          onTap: (int value) {
+            setState( () {
+              _currentTab = value;
+            });
+            if(_currentTab == 0){
+              call();
+            }
+
+            if(_currentTab == 1){
+                print("Launching camera");
+                 Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CameraScreen(widget.cameras)
+                        )
+                        );
+            }
+
+            if(_currentTab == 2 && isUserLoggedIn == 0){
+                print("Initiating Login");
+                 Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => LoginPage()
+                        )
+                        );
+            }
+
+            else if(_currentTab == 2 && isUserLoggedIn == 1){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => UserProfilePage(
+                      mainUser.getFullName(),
+                      mainUser.getUserStatus(),
+                      mainUser.getUserBio(),
+                      mainUser.getUserFollowers(),
+                      mainUser.getUserPosts(),
+                      mainUser.getUserScores()
+                  )
+                  )
+              );
+            } 
+          },
+
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.notifications_active,
+                size: 30.0,
+              ), // Icon
+              title: SizedBox.shrink(),
+            ), // BottomNavigationBarItem
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.camera,
+                size: 30.0,
+              ), // Icon
+              title: SizedBox.shrink(),
+            ), // BottomNavigationBarItem
+            BottomNavigationBarItem(
+              icon: CircleAvatar(
+                radius: 15.0,
+                backgroundImage: NetworkImage(( isUserLoggedIn==1? mainUser.getImageUrl() : mainUserAvatarImageUrl))
+              ), // CircleAvatar
+              title: SizedBox.shrink(),
+            ) // BottomNavigationBarItem
+          ], // items
+        );
+
+}
   
   @override
   Widget build (BuildContext context){ // builds the things you want to
@@ -206,80 +282,12 @@ class _HomeScreenState extends State<HomeScreen>{
             HotelCarousel(),
             SizedBox(height: 20.0),
             TopHitsCarousel(),
+            SizedBox(height: 20.0),
+            RecommCarousel(),
           ], // <Widget>[]
         ), // List View
       ), // SafeArea
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentTab,
-          onTap: (int value) {
-            setState( () {
-              _currentTab = value;
-            });
-            if(_currentTab == 0){
-              call();
-            }
-
-            if(_currentTab == 1){
-                print("Launching camera");
-                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CameraScreen(widget.cameras)
-                        )
-                        );
-            }
-
-            if(_currentTab == 2 && isUserLoggedIn == 0){
-                print("Initiating Login");
-                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => LoginPage()
-                        )
-                        );
-            }
-
-            else if(_currentTab == 2 && isUserLoggedIn == 1){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => UserProfilePage(
-                      mainUser.getFullName(),
-                      mainUser.getUserStatus(),
-                      mainUser.getUserBio(),
-                      mainUser.getUserFollowers(),
-                      mainUser.getUserPosts(),
-                      mainUser.getUserScores()
-                  )
-                  )
-              );
-            } 
-          },
-
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.notifications_active,
-                size: 30.0,
-              ), // Icon
-              title: SizedBox.shrink(),
-            ), // BottomNavigationBarItem
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.camera,
-                size: 30.0,
-              ), // Icon
-              title: SizedBox.shrink(),
-            ), // BottomNavigationBarItem
-            BottomNavigationBarItem(
-              icon: CircleAvatar(
-                radius: 15.0,
-                backgroundImage: NetworkImage(( isUserLoggedIn==1? mainUser.getImageUrl() : mainUserAvatarImageUrl))
-              ), // CircleAvatar
-              title: SizedBox.shrink(),
-            ) // BottomNavigationBarItem
-          ], // items
-        ), // BottomNavigationBar
+      bottomNavigationBar: getBottomNavigationBar(context), // BottomNavigationBar
     ); // Scaffold
   } 
 

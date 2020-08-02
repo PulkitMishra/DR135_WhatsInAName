@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:travel_androidx/top_hits_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'destination_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

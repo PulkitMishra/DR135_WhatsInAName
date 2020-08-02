@@ -12,6 +12,7 @@ class User{
   String email;
   String password;
   String documentId;
+  String age;
 
   User(
     this._fullName,

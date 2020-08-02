@@ -24,7 +24,7 @@ class _MyHomePageState extends State<LoginPage> {
                   Container(
                     padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
                     child: Text(
-                      'Hello There.',
+                      'Welcome back',
                       style:
                           TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
                     ),
@@ -201,6 +201,7 @@ class _MyHomePageState extends State<LoginPage> {
               list[i].data['password'],
             );
             mainUser.documentId = list[i].data['documentId'];
+            mainUser.age = list[i].data['age'];
             print("navigating to profile page");
             Navigator.push(context, MaterialPageRoute(builder: (_) => UserProfilePage(
               list[i].data['name'], 

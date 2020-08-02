@@ -15,6 +15,7 @@ class Destination {
   String long_description;
   String hits;
   String monumentID;
+  String age;
 
   Destination({
     this.monument,
@@ -59,6 +60,8 @@ List<Activity> activities = [
 ];
 
 List<Destination> destinations = [];
+List<Destination> young_destinations = [];
+List<Destination> old_destinations = [];
 
 var monument_description_map = {
     "Reis Magos Fort" : "The fort which stands on the hill overlooking the Reis Magos Church today, was one of the first bastions of the Portuguese rulers against enemy invasion. The fort has also been skilfully repaired in recent years and partly restored to its former glory. It is clearly visible, with its distinctive reddish stone walls, all the way from Panaji which lies across the Mandovi River from it\nAddress: Verem, Bardez, Goa 403114\nHours:\nSunday	9:30am\-5pm\nMonday	Closed\nTuesday	9:30am\-5pm\nWednesday	9:30am\-5pm\nThursday	9:30am\-5pm\nFriday	9:30am\-5pm\nSaturday	9:30am\-5pm\nPhone: 082750 25195",                        
@@ -126,6 +129,15 @@ class UpdateListOfDestination{
       destinations[i].long_description = final_desc;
       destinations[i].hits = list[i].data['hits'];
       destinations[i].monumentID = list[i].documentID;
+      destinations[i].age = list[i].data['age'];
+
+      if(destinations[i].age == "old"){
+        old_destinations.add(destinations[i]);
+      }
+
+      else if(destinations[i].age == "yound"){
+        young_destinations.add(destinations[i]);
+      }
     }
 
     int length = destinations.length;
@@ -141,6 +153,8 @@ class UpdateListOfDestination{
             }
         }
     }
+
+
 }
 }
     
