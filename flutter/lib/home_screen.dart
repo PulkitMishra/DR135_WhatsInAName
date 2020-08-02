@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_androidx/UserProfile.dart';
+import 'package:travel_androidx/flight_list_screen.dart';
 import 'package:travel_androidx/nearby_places.dart';
 import 'package:travel_androidx/recomm.dart';
 import 'package:travel_androidx/top_hits_carousel.dart';
@@ -87,8 +88,36 @@ class _HomeScreenState extends State<HomeScreen>{
         print(e.toString());
       }
     }
-    
-  
+  }
+
+  void mail() async {
+    QuerySnapshot querySnapshot = await Firestore.instance.collection('misc').getDocuments();
+    var list = querySnapshot.documents;
+    for(int i = 0; i < list.length; i++){
+      try{
+        String email = list[i].data['sos_email'];
+        launch("mailto:$email?body=SOS");
+      }
+
+      catch (e){
+        print(e.toString());
+      }
+    }
+  }
+
+void message() async {
+    QuerySnapshot querySnapshot = await Firestore.instance.collection('misc').getDocuments();
+    var list = querySnapshot.documents;
+    for(int i = 0; i < list.length; i++){
+      try{
+        String message_number = list[i].data['sos_number'];
+        launch("sms:$message_number?body=SOS");
+      }
+
+      catch (e){
+        print(e.toString());
+      }
+    }
   }
 
   Future<void> launchBusWebpage() async {
@@ -102,15 +131,23 @@ class _HomeScreenState extends State<HomeScreen>{
       }
   }
 
-  Future<void> launchFlightsWebpage() async {
-      const url = 'https://www.google.com/flights/flights-from-*-to-goa.html';
-      if (await canLaunch(url)) {
-        await launch(url);
-      } 
+  Future<void> launchFlightsWebpage(BuildContext context) async {
+      // const url = 'https://www.google.com/flights/flights-from-*-to-goa.html';
+      // if (await canLaunch(url)) {
+      //   await launch(url);
+      // } 
       
-      else {
-        throw 'Could not launch $url';
+      // else {
+      //   throw 'Could not launch $url';
+      // }
+      String name;
+      if(mainUser == null){
+          name = "(Login)";
       }
+      else{
+        name = mainUser.getFullName();
+      }
+      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => FlightListScreen(fullName : name)));
   }
 
   Future<void> launchBikingWebpage() async {
@@ -124,82 +161,150 @@ class _HomeScreenState extends State<HomeScreen>{
       }
   }
 
-  
+int multipleSoS = 0;
 
 BottomNavigationBar getBottomNavigationBar(BuildContext context){
 
-  return BottomNavigationBar(
-          currentIndex: _currentTab,
-          onTap: (int value) {
-            setState( () {
-              _currentTab = value;
-            });
-            if(_currentTab == 0){
-              call();
-            }
+  if(multipleSoS == 0){
+    return BottomNavigationBar(
+            currentIndex: _currentTab,
+            onTap: (int value) {
+              setState( () {
+                _currentTab = value;
+              });
+              if(_currentTab == 0){
+                multipleSoS = 1;
+              }
 
-            if(_currentTab == 1){
-                print("Launching camera");
-                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CameraScreen(widget.cameras)
-                        )
-                        );
-            }
+              if(_currentTab == 1){
+                  print("Launching camera");
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CameraScreen(widget.cameras)
+                          )
+                          );
+              }
 
-            if(_currentTab == 2 && isUserLoggedIn == 0){
-                print("Initiating Login");
-                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => LoginPage()
-                        )
-                        );
-            }
+              if(_currentTab == 2 && isUserLoggedIn == 0){
+                  print("Initiating Login");
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => LoginPage()
+                          )
+                          );
+              }
 
-            else if(_currentTab == 2 && isUserLoggedIn == 1){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => UserProfilePage(
-                      mainUser.getFullName(),
-                      mainUser.getUserStatus(),
-                      mainUser.getUserBio(),
-                      mainUser.getUserFollowers(),
-                      mainUser.getUserPosts(),
-                      mainUser.getUserScores()
-                  )
-                  )
-              );
-            } 
-          },
+              else if(_currentTab == 2 && isUserLoggedIn == 1){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UserProfilePage(
+                        mainUser.getFullName(),
+                        mainUser.getUserStatus(),
+                        mainUser.getUserBio(),
+                        mainUser.getUserFollowers(),
+                        mainUser.getUserPosts(),
+                        mainUser.getUserScores()
+                    )
+                    )
+                );
+              } 
+            },
 
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.notifications_active,
-                size: 30.0,
-              ), // Icon
-              title: SizedBox.shrink(),
-            ), // BottomNavigationBarItem
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.camera,
-                size: 30.0,
-              ), // Icon
-              title: SizedBox.shrink(),
-            ), // BottomNavigationBarItem
-            BottomNavigationBarItem(
-              icon: CircleAvatar(
-                radius: 15.0,
-                backgroundImage: NetworkImage(( isUserLoggedIn==1? mainUser.getImageUrl() : mainUserAvatarImageUrl))
-              ), // CircleAvatar
-              title: SizedBox.shrink(),
-            ) // BottomNavigationBarItem
-          ], // items
-        );
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.notifications_active,
+                  size: 30.0,
+                ), // Icon
+                title: SizedBox.shrink(),
+              ), // BottomNavigationBarItem
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.camera,
+                  size: 30.0,
+                ), // Icon
+                title: SizedBox.shrink(),
+              ), // BottomNavigationBarItem
+              BottomNavigationBarItem(
+                icon: CircleAvatar(
+                  radius: 15.0,
+                  backgroundImage: NetworkImage(( isUserLoggedIn==1? mainUser.getImageUrl() : mainUserAvatarImageUrl))
+                ), // CircleAvatar
+                title: SizedBox.shrink(),
+              ) // BottomNavigationBarItem
+            ], // items
+          );
+  }
 
+  else if(multipleSoS == 1){
+
+
+      return BottomNavigationBar(
+            currentIndex: _currentTab,
+            onTap: (int value) {
+              setState( () {
+                _currentTab = value;
+              });
+              if(_currentTab == 0){
+                multipleSoS = 0;
+              }
+
+              if(_currentTab == 1){
+                  call();
+              }
+
+
+              if(_currentTab == 2){
+                  call();
+              }
+
+              if(_currentTab == 3){
+                  call();
+              }
+
+            },
+
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.notifications_active,
+                  color: Colors.redAccent,
+                  size: 20.0,
+                ), // Icon
+                title: SizedBox.shrink(),
+              ), // BottomNavigationBarItem
+              
+              BottomNavigationBarItem(
+                icon: CircleAvatar(
+                  radius: 15.0,
+                  backgroundImage: NetworkImage("https://cdn4.vectorstock.com/i/1000x1000/60/78/police-avatar-character-icon-vector-12646078.jpg")
+                ), // CircleAvatar
+                title: SizedBox.shrink(),
+              ) ,
+              
+              BottomNavigationBarItem(
+                icon: CircleAvatar(
+                  radius: 15.0,
+                  backgroundImage: NetworkImage("https://cdn4.vectorstock.com/i/1000x1000/33/08/professional-doctor-avatar-character-vector-13433308.jpg")
+                ), // CircleAvatar
+                title: SizedBox.shrink(),
+              ) ,
+              
+              BottomNavigationBarItem(
+                icon: CircleAvatar(
+                  radius: 15.0,
+                  backgroundImage: NetworkImage("https://c8.alamy.com/comp/2A3AC62/man-firefighter-avatar-vector-illustration-in-flat-style-2A3AC62.jpg")
+                ), // CircleAvatar
+                title: SizedBox.shrink(),
+              ) ,// BottomNavigationBarItem
+
+            ], // items
+          );
+
+  }
 }
   
   @override
@@ -248,7 +353,7 @@ BottomNavigationBar getBottomNavigationBar(BuildContext context){
                         }
 
                         else if(_selectedIndex == 2){
-                          launchFlightsWebpage();
+                          launchFlightsWebpage(context);
                         }
 
                         else if(_selectedIndex == 3){

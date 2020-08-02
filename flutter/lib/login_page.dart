@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:travel_androidx/UserProfile.dart';
 import 'signup_page.dart';
 import 'user_model.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+
 class LoginPage extends StatefulWidget {
   @override
   _MyHomePageState createState() => new _MyHomePageState();
@@ -11,6 +16,85 @@ class LoginPage extends StatefulWidget {
 class _MyHomePageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+
+FirebaseAuth _auth = FirebaseAuth.instance;
+GoogleSignIn googleSignIn = GoogleSignIn();
+
+
+Future<void> signInWithGoogle() async {
+
+  if(isUserLoggedIn == 1){
+    print("User already logged in");
+    return;
+  }
+
+  final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+  final GoogleSignInAuthentication googleSignInAuthentication =
+      await googleSignInAccount.authentication;
+
+  final AuthCredential credential = GoogleAuthProvider.getCredential(
+    accessToken: googleSignInAuthentication.accessToken,
+    idToken: googleSignInAuthentication.idToken,
+  );
+
+  final AuthResult authResult = await _auth.signInWithCredential(credential);
+  final FirebaseUser user = authResult.user;
+
+  final FirebaseUser currentUser = await _auth.currentUser();
+
+  isUserLoggedIn = 1;          
+  mainUser = new User(
+      currentUser.displayName, 
+      "Traveler", 
+      "Edit your bio", 
+      "0", 
+      "0",  
+      "0",  
+      currentUser.photoUrl,
+      currentUser.photoUrl,  
+      currentUser.email,  
+      "GoogleSignIn",
+  );
+      mainUser.documentId = currentUser.uid;
+      mainUser.age = "young";
+      print("navigating to profile page");
+            Navigator.push(context, MaterialPageRoute(builder: (_) => UserProfilePage(
+              mainUser.getFullName(), 
+              "Traveler", 
+              "Enter your bio", 
+              "0", 
+              "0",  
+              "0"
+    )));
+}
+
+void signOutGoogle() async{
+  await googleSignIn.signOut();
+}
+  
+  Widget googleSignInButton() {
+    return SignInButton(
+        Buttons.Google,
+        onPressed: () {signInWithGoogle();},
+    );
+  }
+
+    Widget facebookSignInButton() {
+    return SignInButton(
+        Buttons.Facebook,
+        onPressed: () {},
+    );
+  }
+
+Widget linkedinSignInButton() {
+    return SignInButton(
+        Buttons.LinkedIn,
+        onPressed: () {},
+    );
+  }
+  
+  
+  
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -24,7 +108,7 @@ class _MyHomePageState extends State<LoginPage> {
                   Container(
                     padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
                     child: Text(
-                      'Welcome back',
+                      'Welcome Back',
                       style:
                           TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
                     ),
@@ -96,66 +180,66 @@ class _MyHomePageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                          )),
+                          )
+                          ),
                     ),
                     SizedBox(height: 20.0),
                     Container(
-                      height: 40.0,
+                      height: 60.0,
                       color: Colors.transparent,
                       child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.black,
-                                style: BorderStyle.solid,
-                                width: 1.0),
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(20.0)),
+                        child: InkWell(
+                          onTap: () {},
+                            child: Center(
+                                child: googleSignInButton(),
+                                  // child: Text('Go Back',
+                                  //     style: TextStyle(
+                                  //         fontWeight: FontWeight.bold,
+                                  //         fontFamily: 'Montserrat')),
+                                ),
+                              
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 20.0),
+                    Container(
+                      height: 60.0,
+                      color: Colors.transparent,
+                      child: Container(
+                        // decoration: BoxDecoration(
+                        //     border: Border.all(
+                        //         color: Colors.black,
+                        //         style: BorderStyle.solid,
+                        //         width: 1.0),
+                        //     color: Colors.transparent,
+                        //     borderRadius: BorderRadius.circular(20.0)),
                         child: InkWell(
                           onTap: () {
-                            Navigator.of(context).pop();
+                            // google sign in here
                           },
                           child: 
                           
                               Center(
-                                child: Text('Go Back',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Montserrat')),
-                              ),
-                          
-                          
+                                child: facebookSignInButton(),
+                                // child: Text('Go Back',
+                                //     style: TextStyle(
+                                //         fontWeight: FontWeight.bold,
+                                //         fontFamily: 'Montserrat')),
+                            ),
                         ),
                       ),
                     ),
+
                   ],
                 )),
-            // SizedBox(height: 15.0),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: <Widget>[
-            //     Text(
-            //       'New to Spotify?',
-            //       style: TextStyle(
-            //         fontFamily: 'Montserrat',
-            //       ),
-            //     ),
-            //     SizedBox(width: 5.0),
-            //     InkWell(
-            //       child: Text('Register',
-            //           style: TextStyle(
-            //               color: Colors.green,
-            //               fontFamily: 'Montserrat',
-            //               fontWeight: FontWeight.bold,
-            //               decoration: TextDecoration.underline)),
-            //     )
-            //   ],
-            // )
+            
           SizedBox(height: 15.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'New to this App ?',
+                  'New here ?',
                   style: TextStyle(fontFamily: 'Montserrat'),
                 ),
                 SizedBox(width: 5.0),

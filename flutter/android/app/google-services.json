@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "643066474721-ejcggqodd65akv6majavoq6dah2pbrht.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.travel_androidx",
+            "certificate_hash": "8673d295f45bada219eebdb572d8741e351c0776"
+          }
+        },
+        {
           "client_id": "643066474721-u6j1m2634rb2v0at9vtqr406ouop953c.apps.googleusercontent.com",
           "client_type": 3
         }

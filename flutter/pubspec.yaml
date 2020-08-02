@@ -51,6 +51,8 @@ dependencies:
   smooth_star_rating:
   tflite:
   url_launcher:
+  flutter_signin_button:
+  flutter_ticket_widget:
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,7 @@ flutter:
   assets:
    - assets/images/
    - assets/
+   - assets/images/google_logo.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

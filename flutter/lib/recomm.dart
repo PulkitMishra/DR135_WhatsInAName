@@ -36,9 +36,11 @@ class RecommCarousel extends StatelessWidget{
     
     if(mainUser != null && mainUser.age == "old"){
       list = old_destinations;
+      print(mainUser.age);
     }
     else if(mainUser != null && mainUser.age == "young"){
       list = young_destinations;
+      print(mainUser.age);
     }
 
     else{

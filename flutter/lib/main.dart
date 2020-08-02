@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_androidx/flight_dummy.dart';
 import 'package:travel_androidx/hotel_model.dart';
 import 'destination_model.dart';
 import 'home_screen.dart';
@@ -24,6 +25,9 @@ Future<Null> main() async{
     await updateHotelObject.getHotelRecords();
     await loadModel();
     main_cameras_list = await availableCameras();
+
+    FlightsMockData flightsMockData = new FlightsMockData();
+    flightsMockData.getFlightsList();
 
     runApp(MyApp());
   }
