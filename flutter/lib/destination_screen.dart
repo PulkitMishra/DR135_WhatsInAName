@@ -2,9 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'bus_details.dart';
+import 'bus_model.dart';
 import 'camera.dart';
 import 'google_maps.dart';
 import 'login_page.dart';
+import 'monument_ticket.dart';
+import 'near_hotel_list.dart';
 import 'review_builder.dart';
 import 'destination_model.dart';
 import 'package:image/image.dart' as im;
@@ -103,9 +107,149 @@ class _DestinationScreenState extends State<DestinationScreen> {
     return widget.destination.long_description.substring(widget.destination.long_description.indexOf(delimiter) + delimiter.length);
   }
 
+
+int isTicketBooking = 0;
+
+Widget buildBottomNavigationBar(BuildContext context){
+  int _currentTab = 0;
+  
+  if(isTicketBooking == 0){
+  
+  
+    return new BottomNavigationBar(
+        currentIndex: _currentTab,
+        onTap: (int value) {
+          setState(() {
+            _currentTab = value;
+          });
+          if(_currentTab == 0){
+            loadReviews();
+          }
+          if(_currentTab == 1){
+            Navigator.push(context, MaterialPageRoute(builder: (_) => HotelDestinationScreen()));
+          }
+          if(_currentTab == 2){
+            sendInfoEmail();
+          }
+          if(_currentTab == 3){
+            sendEmail();
+          }
+
+          if(_currentTab == 4){
+            isTicketBooking = 1;
+          }
+        },
+
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.rate_review,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.hotel,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.edit,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ), // BottomNavigationBarItem
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.email,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ),
+          
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.contacts,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ), // BottomNavigationBarItem
+        ], // items
+      );
+  }
+
+  else if(isTicketBooking == 1){
+
+      return new BottomNavigationBar(
+        currentIndex: _currentTab,
+        onTap: (int value) {
+          setState(() {
+            _currentTab = value;
+          });
+          if(_currentTab == 0){
+            isTicketBooking = 0;
+          }
+          if(_currentTab == 1){
+              Bus bus = getBusDetails(widget.destination.class_label);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => BusDetailScreen(
+                "Nimish Mishra",
+                bus
+              )));
+          }
+
+            if(_currentTab == 2){
+                Navigator.push(context, MaterialPageRoute(builder: (_) => MonumentTicket(
+                  widget.destination.monument
+                )));
+          }
+
+        },
+
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.contacts,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.directions_bus,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.event_note,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          )
+        ], // items
+      );
+
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
-    int _currentTab = 0;
     return Scaffold(
       body: Column(children: <Widget>[
         Expanded(
@@ -151,7 +295,11 @@ class _DestinationScreenState extends State<DestinationScreen> {
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1.2,
                   ),// TextStyle
-                  ), // Text
+                  ),
+                  Icon(FontAwesomeIcons.vrCardboard,
+                        size:15.0,
+                        color:Colors.white,
+                      ),  // Text
                   Row(
                     children: <Widget>[
                       Icon(FontAwesomeIcons.locationArrow,
@@ -337,47 +485,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       ],
       ),
 
-      bottomNavigationBar: new BottomNavigationBar(
-        currentIndex: _currentTab,
-        onTap: (int value) {
-          setState(() {
-            _currentTab = value;
-          });
-          if(_currentTab == 0){
-            loadReviews();
-          }
-          if(_currentTab == 1){
-            sendInfoEmail();
-          }
-          if(_currentTab == 2){
-            sendEmail();
-          }
-        },
-
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.rate_review,
-              size: 30.0,
-            ), // Icon
-            title: SizedBox.shrink(),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.edit,
-              size: 30.0,
-            ), // Icon
-            title: SizedBox.shrink(),
-          ), // BottomNavigationBarItem
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.email,
-              size: 30.0,
-            ), // Icon
-            title: SizedBox.shrink(),
-          ), // BottomNavigationBarItem
-        ], // items
-      ),
+      bottomNavigationBar: buildBottomNavigationBar(context),
 
     );
   }

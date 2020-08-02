@@ -50,10 +50,12 @@ dependencies:
   flutter_email_sender:
   smooth_star_rating:
   tflite:
+  flutter_local_notifications:
   url_launcher:
   flutter_signin_button:
   flutter_ticket_widget:
-
+  flutter_datetime_picker:
+  numberpicker:
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,9 +72,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-   - assets/images/
-   - assets/
-   - assets/images/google_logo.jpg
+    - assets/images/
+    - assets/
+    - assets/images/google_logo.jpg
+    - assets/images/hotels/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

@@ -6,6 +6,7 @@ import 'home_screen.dart';
 import 'package:camera/camera.dart';
 import 'review_builder.dart';
 import 'package:tflite/tflite.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 List <CameraDescription> main_cameras_list;
 
@@ -15,6 +16,7 @@ loadModel() async {
     labels: 'assets/labels_new.txt'
     );
 }
+
 
 Future<Null> main() async{
     WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,7 @@ Future<Null> main() async{
 
     FlightsMockData flightsMockData = new FlightsMockData();
     flightsMockData.getFlightsList();
+
 
     runApp(MyApp());
   }

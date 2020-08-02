@@ -262,8 +262,12 @@ Stack buildReview(int index){
                   ),
                   GestureDetector(
                         onTap: (){ 
-                          if(isUserLoggedIn == 1)
+                          if(isUserLoggedIn == 1){
+                              String posts = mainUser.getUserPosts();
+                              int posts_integer = int.parse(posts);
+                              mainUser.setUserPosts((posts_integer + 1).toString());
                               submitReview();
+                          }
                           else
                               Navigator.push(context, MaterialPageRoute(builder: (_) => LoginPage()));
                         },

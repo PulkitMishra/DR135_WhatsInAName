@@ -20,6 +20,8 @@ import 'package:travel_androidx/report.dart';
 import 'package:image/image.dart' as im;
 import 'package:image_picker/image_picker.dart';
 
+import 'user_model.dart';
+
 class CameraScreen extends StatefulWidget {
   
   List<CameraDescription> cameras; // a list of the cameras
@@ -203,7 +205,9 @@ Future <void> updateHits(String docID, String hits) async {
      
     setStoredImageURL(imagePath);
 
-
+    String scores = mainUser.getUserScores();
+    int scores_integer = int.parse(scores);
+    mainUser.setUserScores((scores_integer + 1).toString());
 
     //  Dio dio = new Dio();                                 
     // print("Sending request");

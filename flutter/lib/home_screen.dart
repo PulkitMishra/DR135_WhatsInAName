@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:travel_androidx/UserProfile.dart';
 import 'package:travel_androidx/flight_list_screen.dart';
 import 'package:travel_androidx/nearby_places.dart';
@@ -306,9 +307,12 @@ BottomNavigationBar getBottomNavigationBar(BuildContext context){
 
   }
 }
-  
+
+
   @override
   Widget build (BuildContext context){ // builds the things you want to
+
+
     return Scaffold(
       body:SafeArea(
         child: ListView(

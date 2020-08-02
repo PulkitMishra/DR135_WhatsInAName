@@ -13,5 +13,5 @@ class Activity {
     this.startTimes,
     this.rating,
     this.price,
-  });
+  }); 
 }

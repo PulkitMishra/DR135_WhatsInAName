@@ -44,6 +44,10 @@ class User{
     return this._status;
   }
 
+  void setUserStatus(String status){
+    this._status = status;
+  }
+
   String getUserBio(){
     return this._bio;
   }
@@ -58,6 +62,14 @@ class User{
 
   String getUserScores(){
     return this._scores;
+  }
+
+  void setUserScores(String scores){
+    this._scores = scores;
+  }
+
+  void setUserPosts(String posts){
+    this._posts = posts;
   }
 
   void setUserBio(String new_bio){

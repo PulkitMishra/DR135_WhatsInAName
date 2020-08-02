@@ -393,6 +393,11 @@ Future<void> updateUserProfileImage() async{
       Navigator.pop(context);
     }
     _bioEditingController = TextEditingController(text: _bio);
+    int posts = int.parse(mainUser.getUserPosts());
+    int scores = int.parse(mainUser.getUserScores());
+    if(posts + scores > 5){
+      mainUser.setUserStatus("Wanderer");
+    }
     return Scaffold(
       body: Stack(
         children: <Widget>[
