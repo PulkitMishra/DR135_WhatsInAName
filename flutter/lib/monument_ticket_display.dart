@@ -1,5 +1,6 @@
 import 'package:flutter_ticket_widget/flutter_ticket_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 
@@ -10,13 +11,15 @@ class MonumentTicketDisplay extends StatefulWidget {
   String monument;
   String tourType;
   String day;
+  bool wheelchairAssistance;
   
 MonumentTicketDisplay(
   this.name,
   this.age,
   this.monument,
   this.tourType,
-  this.day
+  this.day,
+  this.wheelchairAssistance
 ){}
 
   @override
@@ -65,7 +68,7 @@ class _HomeScreenState extends State<MonumentTicketDisplay> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Icon(
-                            Icons.directions_bus,
+                            (widget.wheelchairAssistance == true)? FontAwesomeIcons.wheelchair : Icons.person,
                             color: Colors.pink,
                           ),
                         ),
@@ -105,8 +108,8 @@ class _HomeScreenState extends State<MonumentTicketDisplay> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 12.0, right: 40.0),
-                        child: ticketDetailsWidget(
-                            'Tour Type ', widget.tourType, 'Price ', "Rs. 100"),
+                        child: ticketDetailsWidgetWheelchair(
+                            'Tour Type ', widget.tourType, 'Price ', "Rs. 100", "Rs. 70", widget.wheelchairAssistance),
                       ),
                     ],
                   ),
@@ -138,6 +141,68 @@ class _HomeScreenState extends State<MonumentTicketDisplay> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget ticketDetailsWidgetWheelchair(String firstTitle, String firstDesc,
+      String secondTitle, String secondDesc, String thirdDesc, bool wheelchair) {
+    String desc;
+    if(wheelchair){
+      desc = thirdDesc;
+    }
+    else
+      desc = secondDesc;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                firstTitle,
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  firstDesc,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                secondTitle,
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  desc,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -195,4 +260,5 @@ class _HomeScreenState extends State<MonumentTicketDisplay> {
       ],
     );
   }
+
 }

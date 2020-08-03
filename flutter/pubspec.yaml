@@ -56,6 +56,7 @@ dependencies:
   flutter_ticket_widget:
   flutter_datetime_picker:
   numberpicker:
+  flutter_downloader:
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -30,6 +30,7 @@ class _MyHomePageState extends State<MonumentTicket> {
   
   
   bool guidedTourBool = false;
+  bool wheelchairAssistance = false;
   
   
   void _onguidedTourBoolChanged(bool newValue) => setState(() {
@@ -52,6 +53,13 @@ class _MyHomePageState extends State<MonumentTicket> {
       tourType = "Unguided";
     }
   });
+
+    void _onwheelchairAssistanceChanged(bool newValue) => setState(() {
+    wheelchairAssistance = newValue;    
+  });
+
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -161,6 +169,25 @@ class _MyHomePageState extends State<MonumentTicket> {
 
                     ],
                   ),
+
+                  Row(children: <Widget>[
+                        Checkbox(
+                          value: wheelchairAssistance,
+                          onChanged: _onwheelchairAssistanceChanged
+                      ),
+
+                      SizedBox(width: 2.0),
+
+                      Text(
+                          'Wheelchair assistance',
+                          style: TextStyle(color: Colors.blue),
+                      ),
+
+
+                    ],
+
+                    
+                  ),
                     SizedBox(height: 10.0),
                     GestureDetector(
                           onTap: () { 
@@ -170,7 +197,8 @@ class _MyHomePageState extends State<MonumentTicket> {
                                     passwordController.text,
                                     widget.monument,
                                     tourType,
-                                    tourDate
+                                    tourDate,
+                                    wheelchairAssistance
                                   )
                               )
                             );

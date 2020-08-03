@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:travel_androidx/seasonal.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'bus_details.dart';
 import 'bus_model.dart';
 import 'camera.dart';
@@ -80,6 +83,18 @@ class _DestinationScreenState extends State<DestinationScreen> {
     }
   }
 
+
+  Future<void> launchBusWebpage() async {
+      const url = 'https://pulkitmishra.github.io/DR135_WhatsInAName/basic/';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } 
+      
+      else {
+        throw 'Could not launch $url';
+      }
+  }
+
   Future <void> sendInfoEmail() async {
     Email email = Email(
       body: "Hi. Here's additional information about " + widget.destination.class_label + ".\n --------- write below ----------",
@@ -89,23 +104,68 @@ class _DestinationScreenState extends State<DestinationScreen> {
     );
     await FlutterEmailSender.send(email);
   }
-
+  
+  String language = ""; 
 
   String getMainText(){
     String delimiter = "HOURS_DELIM";
-    return widget.destination.long_description.substring(0, widget.destination.long_description.indexOf(delimiter));
+    String text = widget.destination.long_description;
+    if(language == "Russian"){
+      try{
+          text = russian_mapper[widget.destination.class_label];          
+      }
+
+      catch (e){
+        text = widget.destination.long_description;
+      }
+
+    }
+
+    return text.substring(0, text.indexOf(delimiter));
   }
 
   String getHourTimings(){
     String delimiter = "HOURS_DELIM";
     String phone_delimiter = "PHONE_DELIM";
-    return widget.destination.long_description.substring(widget.destination.long_description.indexOf(delimiter) + delimiter.length, widget.destination.long_description.indexOf(phone_delimiter));
+    String text = widget.destination.long_description;
+    if(language == "Russian"){
+      try{
+          text = russian_mapper[widget.destination.class_label];      
+      }
+
+      catch (e){
+        text = widget.destination.long_description;
+      }
+
+    }
+    return text.substring(text.indexOf(delimiter) + delimiter.length, text.indexOf(phone_delimiter));
   }
 
   String getPhoneNumber(){
     String delimiter = "PHONE_DELIM";
-    return widget.destination.long_description.substring(widget.destination.long_description.indexOf(delimiter) + delimiter.length);
+    String text = widget.destination.long_description;
+    if(language == "Russian"){
+      try{
+          text = russian_mapper[widget.destination.class_label];          
+      }
+
+      catch (e){
+        text = widget.destination.long_description;
+      }
+
+    }
+    return text.substring(text.indexOf(delimiter) + delimiter.length);
   }
+
+void downloadPDF() async {
+
+  String url = "https://firebasestorage.googleapis.com/v0/b/flutter-travel-ea5f8.appspot.com/o/travel_guide.pdf?alt=media&token=866fa7df-327d-4b72-be12-5e8a71b98187";
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
 
 int isTicketBooking = 0;
@@ -213,6 +273,10 @@ Widget buildBottomNavigationBar(BuildContext context){
                 )));
           }
 
+          if(_currentTab == 3){
+                Navigator.push(context, MaterialPageRoute(builder: (_) => SeasonalList()));
+          }
+
         },
 
         items: [
@@ -236,6 +300,15 @@ Widget buildBottomNavigationBar(BuildContext context){
           BottomNavigationBarItem(
             icon: Icon(
               Icons.event_note,
+              size: 30.0,
+              color: Colors.lightBlueAccent,
+            ), // Icon
+            title: SizedBox.shrink(),
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(
+              FontAwesomeIcons.sun,
               size: 30.0,
               color: Colors.lightBlueAccent,
             ), // Icon
@@ -295,16 +368,12 @@ Widget buildBottomNavigationBar(BuildContext context){
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1.2,
                   ),// TextStyle
-                  ),
-                  Icon(FontAwesomeIcons.vrCardboard,
-                        size:15.0,
-                        color:Colors.white,
-                      ),  // Text
+                  ),// Text
                   Row(
                     children: <Widget>[
                       Icon(FontAwesomeIcons.locationArrow,
                         size:15.0,
-                        color:Colors.white,
+                        color:Colors.red,
                       ), // Icon
                       SizedBox(width:5.0),
                       Text(widget.destination.locality, style: TextStyle(
@@ -316,9 +385,42 @@ Widget buildBottomNavigationBar(BuildContext context){
                   ), // row
                 ], // Widget
               ),
-            ), // column
+            ), 
+            
             Positioned(
-              right: 20.0,
+              right: 55.0,
+              bottom: 10.0,
+              child: IconButton(
+                icon: Icon(FontAwesomeIcons.vrCardboard),
+                color: Colors.red,
+                iconSize: 25.0,
+                onPressed: () {
+                    launchBusWebpage();
+                },
+              ),
+            ),
+
+            Positioned(
+              right: 105.0,
+              bottom: 10.0,
+              child: IconButton(
+                icon: Icon(FontAwesomeIcons.language),
+                color: Colors.red,
+                iconSize: 25.0,
+                onPressed: () async {
+                    // setState(() {
+                    //   if(language == "")
+                    //     language = "Russian";
+                    //   else if (language == "Russian")
+                    //     language = "";
+                    // });
+                    downloadPDF();
+                },
+              ),
+            ),
+// column
+            Positioned(
+              right: 10.0,
               bottom: 20.0,
               child: IconButton(
                 icon: Icon(Icons.location_on),

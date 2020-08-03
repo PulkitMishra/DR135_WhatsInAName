@@ -8,6 +8,7 @@ import 'package:travel_androidx/nearby_places.dart';
 import 'package:travel_androidx/recomm.dart';
 import 'package:travel_androidx/top_hits_carousel.dart';
 import 'package:travel_androidx/user_model.dart';
+import 'blog_page_list.dart';
 import 'camera.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'destination_carousel.dart';
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen>{
   int _currentTab = 0;
   // create a list of icons to be displayed at the top of the bar
   List<IconData> _icons = [
-    FontAwesomeIcons.airbnb,
+    FontAwesomeIcons.blog,
     FontAwesomeIcons.bus,
     FontAwesomeIcons.plane,
     FontAwesomeIcons.biking,
@@ -308,6 +309,17 @@ BottomNavigationBar getBottomNavigationBar(BuildContext context){
   }
 }
 
+Future<void> launchSovWebpage() async {
+    const url = 'http://www.mariodemiranda.com/';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } 
+    
+    else {
+      throw 'Could not launch $url';
+    }
+}
+
 
   @override
   Widget build (BuildContext context){ // builds the things you want to
@@ -349,7 +361,7 @@ BottomNavigationBar getBottomNavigationBar(BuildContext context){
                         });
 
                         if(_selectedIndex == 0){
-                          print("Airbnb");
+                          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => BlogList()));
                         }
 
                         else if(_selectedIndex == 1){
@@ -387,6 +399,43 @@ BottomNavigationBar getBottomNavigationBar(BuildContext context){
             ), // Row
             SizedBox(height: 20.0),
             DestinationCarousel(),
+            SizedBox(height: 20.0),
+            Container(
+              width: 50,
+                          child: OutlineButton(
+      splashColor: Colors.grey,
+      onPressed: () {
+        launchSovWebpage();
+        setState() {
+          
+        }
+      },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      highlightElevation: 0,
+      borderSide: BorderSide(color: Colors.grey),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+              Icon(Icons.add),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  'Check out the souvenir shop',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              Icon(Icons.arrow_right)
+          ],
+        ),
+      ),
+    ),
+            ),
             SizedBox(height: 20.0),
             HotelCarousel(),
             SizedBox(height: 20.0),
